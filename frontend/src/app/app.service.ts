@@ -7,6 +7,7 @@ import { catchError, map, Observable, Subject } from 'rxjs';
 })
 export class AppService {
 
+  
 
   public url = 'http://localhost:3000/';
   // Constructor
@@ -46,7 +47,8 @@ export class AppService {
         console.error('ERROR GET')
         throw 'ERROR GET';
       })
-    );
+    );  
+
   }
 
   Create(user: any): Observable<any> {

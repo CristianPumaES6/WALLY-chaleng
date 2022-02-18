@@ -7,13 +7,17 @@ import { AppService } from './app.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Chaleng WALLY';
+
+
+  public title = 'Chaleng WALLY';
   public listUsers: any[] = <any>[];
   public usuarioForm = {
     id: 0,
     name: '',
     dni: ''
   }
+  public isConectionServer = false;
+
 
   constructor(
     private _userService: AppService,
@@ -29,7 +33,23 @@ export class AppComponent {
         if (!this.usuarioForm.name) { alert('Ingrese un nombre'); throw '' }
         if (!this.usuarioForm.dni) { alert('Ingrese un DNI'); throw '' }
 
-        return this._userService.Create(this.usuarioForm).pipe().toPromise()
+        if (this.isConectionServer) {
+
+          return this._userService.Create(this.usuarioForm).pipe().toPromise()
+        } else {
+
+          let ultimoId = 1;
+          let cantUsers = this.listUsers.length;
+          if (cantUsers > 0) {
+            ultimoId = this.listUsers[cantUsers - 1].id + 1;
+          }
+          this.usuarioForm.id = ultimoId;
+          this.listUsers.push(this.usuarioForm);
+
+
+          this.listUsers.push()
+          return this.usuarioForm;
+        }
       }
     ).then(
       result => {
@@ -49,7 +69,20 @@ export class AppComponent {
         if (!this.usuarioForm.name) { alert('Ingrese un nombre'); throw '' }
         if (!this.usuarioForm.dni) { alert('Ingrese un DNI'); throw '' }
 
-        return this._userService.Update(this.usuarioForm).pipe().toPromise()
+        if (this.isConectionServer) {
+          return this._userService.Update(this.usuarioForm).pipe().toPromise()
+        } else {
+          // Recorremos los usuarios que tenemos en cache.
+          this.listUsers.forEach(user => {
+            // Buscamos el usuario con el mismo id para editarlo.
+            if (user.id == this.usuarioForm.id) {
+              user.name = this.usuarioForm.name;
+              user.dni = this.usuarioForm.dni;
+            }
+          });
+
+          return this.usuarioForm;
+        }
       }
     ).then(
       result => {
@@ -121,13 +154,13 @@ export class AppComponent {
     )
   }
 
-  
+
   public async ClickCancel() {
 
     return await Promise.resolve(true).then(
       result => {
 
-        
+
         this.RefreshForm();
 
         return true;
@@ -143,25 +176,30 @@ export class AppComponent {
     };
   }
 
-  public async ClickDelete(userId:number){
+  public async ClickDelete(userId: number) {
     if (confirm('Esta seguro que desea eliminar el siguiente registro?')) {
       await this.EliminarUsuario(userId);
     } else {
-      
+
     }
   }
 
-  public async EliminarUsuario(userId:number){
+  public async EliminarUsuario(userId: number) {
 
     return await Promise.resolve(true).then(
       result => {
 
+        if (this.isConectionServer) {
+          return this._userService.Delete(userId).pipe().toPromise()
+        } else {
+          let users = this.listUsers.filter(user => user.id != userId);
 
-        return this._userService.Delete(userId).pipe().toPromise()
+          return users;
+        }
       }
     ).then(
       result => {
-        
+
         this.listUsers = result;
 
         this.RefreshForm()
@@ -176,8 +214,13 @@ export class AppComponent {
     return await Promise.resolve(true).then(
       result => {
 
+        if (this.isConectionServer) {
 
-        return this._userService.Get().pipe().toPromise()
+          return this._userService.Get().pipe().toPromise()
+        }
+        else {
+          return this.listUsers;
+        }
       }
     ).then(
       result => {
