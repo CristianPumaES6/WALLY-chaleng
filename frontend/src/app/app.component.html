@@ -1,17 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Chalen Wally</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
 </head>
-<body>
-  
-  <button (click)="ClickRegistrarUsuario()">ClickRegistrarUsuario()</button>
+
+<body> 
+  <button (click)="ObtenerListaDeUsuarios()">Obtener Usuarios()</button>
 
 
 
-  listUser
+  <div>
+
+    <div class="mb-3">
+      <label for="name" class="form-label">Nombre :</label>
+      <input type="text" class="form-control" id="name" [(ngModel)]="usuarioForm.name" placeholder="Ingrese un nombre">
+    </div>
+
+    <div class="mb-3">
+      <label for="dni" class="form-label">DNI :</label>
+      <input type="text" class="form-control"  id="dni" [(ngModel)]="usuarioForm.dni" placeholder="Ingrese un DNI">
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="ClickSave()">
+      <ng-template [ngIf]="!usuarioForm.id" >
+        Agregar Usuario
+      </ng-template>
+
+      <ng-template [ngIf]="usuarioForm.id" >
+        Actualizar Usuario
+      </ng-template>
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="ClickCancel()">Cancelar</button>
+
+  </div>
+  <br><br><br>
+
+  <table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Codigo</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">DNI</th>
+        <th scope="col"><th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <ng-template ngFor let-iUser [ngForOf]="listUsers" let-i="index">
+        <tr>
+          <td>{{iUser.id}}</td>
+          <td>{{iUser.name}}</td>
+          <td>{{iUser.dni}}</td>
+          <td>
+
+
+            <button type="button" class="btn btn-primary" (click)="ClickEditar(iUser.id)">
+              <i class="bi bi-pencil-square"> </i>
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="ClickDelete(iUser.id)">
+              <i class="bi bi-trash-fill"> </i>
+
+            </button>
+
+          </td>
+        </tr>
+      </ng-template>
+
+    </tbody>
+  </table>
+
 </body>
+
 </html>

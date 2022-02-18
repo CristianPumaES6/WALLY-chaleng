@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller('person')
+@Controller('users')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -12,7 +12,11 @@ export class AppController {
   @Post('create')
   Create(@Body() userCreate: any): any {
   
-    let ultimoId = this.datosUsers.length +1;
+    let ultimoId = 1;
+    let cantUsers = this.datosUsers.length;
+    if(cantUsers>0){
+      ultimoId = this.datosUsers[cantUsers-1].id +1;
+    }
     userCreate.id = ultimoId;
     this.datosUsers.push(userCreate);
 
@@ -20,7 +24,7 @@ export class AppController {
   }
 
   // Actualizar usuario.
-  @Put(':id/delete')
+  @Put('update')
   Update(@Body() userUpdate: any): any {
 
     // Recorremos los usuarios que tenemos en cache.

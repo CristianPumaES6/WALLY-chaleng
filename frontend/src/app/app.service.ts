@@ -17,9 +17,9 @@ export class AppService {
   }
 
   // Obtine solo un objeto desde el ID.
-  Get(userId: number): Observable<any> {
+  Get(): Observable<any> {
     // Armo el request
-    let url: string = this.url;
+    let url: string = this.url+'users';
     let headers: HttpHeaders = new HttpHeaders(
       {
         'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export class AppService {
 
   Create(user: any): Observable<any> {
     // Armo el request
-    let url: string = this.url;
+    let url: string = this.url+'users/create';
     let headers: HttpHeaders = new HttpHeaders(
       {
         'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export class AppService {
 
 
     // Armo el request
-    let url: string = this.url;
+    let url: string = this.url+'users/update';
     let headers: HttpHeaders = new HttpHeaders(
       {
         'Content-Type': 'application/json',
@@ -112,10 +112,9 @@ export class AppService {
     );
   }
 
-  // Eliminamos el obj desde el id recibido desde el obj.
   Delete(userId: number): Observable<any> {
     // Armo el request
-    let url: string = this.url;
+    let url: string = this.url+'users/'+userId+'/delete';
     let headers: HttpHeaders = new HttpHeaders(
       {
         'Content-Type': 'application/json',
@@ -127,11 +126,7 @@ export class AppService {
     return this.httpClient.delete(url, options).pipe(
       map(
         (response: any) => {
-          if (response.status) {
             return response;
-          } else {
-            throw 'ERROR DELETE';
-          }
         }
       ),
       catchError((err) => {
