@@ -1,30 +1,26 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+@Controller('person')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   public datosUsers:any[]=[];
+ 
 
-  @Get()
-  GetsUsers(): any[] {
-    let users = this.datosUsers;
-    return users;
-  }
-
-
+  // Permite crear al usuario
+  @Post('create')
+  Create(@Body() userCreate: any): any {
   
-  @Post()
-  Create(@Body() userUpdate: any): any[] {
-    this.datosUsers.push(userUpdate);
+    let ultimoId = this.datosUsers.length +1;
+    userCreate.id = ultimoId;
+    this.datosUsers.push(userCreate);
 
-
-    return this.datosUsers;
+    return userCreate;
   }
 
   // Actualizar usuario.
-  @Put()
+  @Put(':id/delete')
   Update(@Body() userUpdate: any): any {
 
     // Recorremos los usuarios que tenemos en cache.
@@ -40,16 +36,20 @@ export class AppController {
   }
 
   
-  //Obtener usurio por ID
-  Get(@Param('id') id): any {
-    let user = this.datosUsers.find(user => user.id==id)
-    return user;
-  }
-
   // Obtener todos los usuarios
   @Get()
   Gets():any[] {
     let users = this.datosUsers;
+    return users;
+  }
+
+  
+  // Obtener todos los usuarios
+  @Delete(':id/delete')
+  Delete(@Param('id') id):any[] {
+    let users = this.datosUsers.filter(user => user.id != id);
+
+    this.datosUsers = users;
     return users;
   }
 }
